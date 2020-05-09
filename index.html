@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+        let playerScore = 0;
+        let computerScore = 0;
+        //let drawScore = 0;
+        let round = 1;
+        let missedRounds = 0;
+        let choices = ['rock', 'paper', 'scissors'];  
+
+        function invalidInput(playerChoice) {
+            if(!choices.includes(playerChoice)){ 
+                missedRounds++;  
+                return true;
+            }
+        }
+        
+        function checkComputerChoice(number) {
+            let randomNumber = Math.floor(Math.random() * number); 
+            return choices[randomNumber];          
+        }          
+        
+        function handleScore(result) {
+            if(result == 'won') {
+                playerScore++;
+                round++;
+                return "You have won!";
+            } else if (result == 'lost') {
+                computerScore++;
+                round++;
+                return "You have lost!";
+            } else if (result == 'draw') {
+                //drawScore++;
+                round++;
+                return "It's a draw!";
+            }                
+        }
+        
+        function playRound(playerChoice, computerChoice) {
+            if(invalidInput(playerChoice)) 
+                return "Please, learn to spell."
+            else if(playerChoice == computerChoice) 
+                return handleScore('draw');
+            else if(playerChoice == "rock" && computerChoice == "scissors")                
+                return handleScore('won');
+            else if(playerChoice == "paper" && computerChoice == "rock") 
+                return handleScore('won');
+            else if(playerChoice == "scissors" && computerChoice == "paper") 
+                return handleScore('won');
+            else 
+                return handleScore('lost');            
+        }        
+     
+        function play() {   
+            for(let i = 0; i < 5; i++) {
+                let playerChoice = prompt("Please choose Rock, Paper or Scissors").toLowerCase();
+                let computerChoice = checkComputerChoice(choices.length);
+                if(missedRounds > 0) {
+                    i -= missedRounds;
+                    missedRounds = 0;
+                }
+                if(playerChoice !== '') {
+                console.log("Round " + round + ":");
+                console.log("You picked " + playerChoice[0].toUpperCase() + playerChoice.slice(1) + " " + "Computer picked " +
+                computerChoice[0].toUpperCase() + computerChoice.slice(1)); 
+                }
+
+                console.log(playRound(playerChoice, computerChoice));
+
+                if(i == 4){
+                    if(playerScore > computerScore) {
+                        console.log("You have won the game " + playerScore + " to " + computerScore);
+                    } else if (playerScore < computerScore) {
+                        console.log("You have lost the game " + playerScore + " to " + computerScore);
+                    } else if (playerScore == computerScore) {
+                        console.log("It's a draw! Play again!");
+                    }
+                }   
+            }
+        }
+        
+        play(); 
+    </script>
+</body>
+</html>
