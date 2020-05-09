@@ -6,88 +6,184 @@
     <title>Document</title>
 </head>
 <body>
+    <h2>Pick your choice. First player with 5 points wins.</h2>
+    <div id="buttons">
+        <button class="button" id="rock">
+            <span>Rock</span>
+        </button>
+        <button class="button" id="paper">
+            <span>Paper</span>
+        </button>
+        <button class="button" id="scissors">
+            <span>Scissors</span>
+        </button>
+        <button class="button" id="resetScore">
+            <span>Restart</span>
+        </button>
+    </div>
+    <div id = "playerScore">
+        
+    </div>
+    <div id = "computerScore">
+
+    </div>
+
+    <div id ="choices">
+        <div id = "playerChoice">
+
+        </div>
+
+        <div id = "computerChoice">
+
+        </div>
+    </div>
+
+    <div id='result'>
+        
+    </div>
     
 
     <script>
         let playerScore = 0;
-        let computerScore = 0;
-        //let drawScore = 0;
-        let round = 1;
-        let missedRounds = 0;
-        let choices = ['rock', 'paper', 'scissors'];  
+        let computerScore = 0;        
+        let playerChoice;
+        let gameState = 'running';
+        let result;        
+        let choices = ['rock', 'paper', 'scissors']; 
 
-        function invalidInput(playerChoice) {
-            if(!choices.includes(playerChoice)){ 
-                missedRounds++;  
-                return true;
-            }
-        }
-        
+        const buttons = document.querySelectorAll('.button');
+        console.log(buttons);
+
+        const choicesDiv = document.querySelector('#choices');
+        const viewPlayerScore = document.querySelector('#playerScore');
+        const viewComputerScore = document.querySelector('#computerScore');
+        const viewPlayerChoice = document.querySelector('#playerChoice');
+        const viewComputerChoice = document.querySelector('#computerChoice');
+        const viewResult = document.querySelector('#result');
+
+
         function checkComputerChoice(number) {
             let randomNumber = Math.floor(Math.random() * number); 
             return choices[randomNumber];          
-        }          
+        }      
         
-        function handleScore(result) {
-            if(result == 'won') {
-                playerScore++;
-                round++;
-                return "You have won!";
-            } else if (result == 'lost') {
-                computerScore++;
-                round++;
-                return "You have lost!";
-            } else if (result == 'draw') {
-                //drawScore++;
-                round++;
-                return "It's a draw!";
-            }                
+        function checkForGameOver() {
+            if(playerScore == 5) {
+                        result = ("You have won the game " + playerScore + " to " + computerScore);
+                        gameState = 'off';
+                        console.log(result);
+            } else if (computerScore == 5) {
+                        result = ("You have lost the game " + playerScore + " to " + computerScore);
+                        console.log(result);
+                        gameState = 'off';
+            }
         }
+
+        function checkForReset() {
+            if(playerChoice == 'resetScore') {
+                    console.log('resetting');
+                    playerScore = 0;
+                    computerScore = 0;
+                    gameState = 'running';                                                          
+            }          
+        }
+
+        function checkRoundResult() {                        
+            if(gameState == 'running') {
+                result = '';                     
+                if(playerChoice == computerChoice) {
+                    console.log('Draw');                               
+                } else if(playerChoice == "rock" && computerChoice == "scissors") {  
+                    console.log('Won');             
+                    playerScore++;               
+                } else if(playerChoice == "paper" && computerChoice == "rock") {
+                    console.log('Won');                
+                    playerScore++;  
+                } else if(playerChoice == "scissors" && computerChoice == "paper") {
+                    console.log('Won');                
+                    playerScore++;
+                } else if(playerChoice == "resetScore") {                    
+                    console.log('Reset');                   
+                } else {
+                    console.log('Lost');
+                    computerScore++;  
+                } 
+            }             
+        }
+
+        function playRound(playerChoice, computerChoice) {            
+            
+            console.log(gameState);
+            
+            checkForReset();               
+            checkRoundResult();
+
+            viewPlayerScore.textContent = "Your score: " + playerScore;
+            viewComputerScore.textContent = "Computer score: " + computerScore;
+            
+            viewPlayerChoice.textContent = "Your last choice: " + playerChoice;   
+            viewComputerChoice.textContent = "Computer's last choice: " + computerChoice; 
+            
+            checkForGameOver(); 
+            
+            viewResult.textContent = result;
+        }    
+              
+        function playGame() {
+            buttons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                playerChoice = (button.id);
+                computerChoice = checkComputerChoice(choices.length);
+                console.log(playerChoice);
+                console.log(computerChoice);                               
+                playRound(playerChoice, computerChoice);
+                })
+            });
+        }
+
         
-        function playRound(playerChoice, computerChoice) {
-            if(invalidInput(playerChoice)) 
-                return "Please, learn to spell."
-            else if(playerChoice == computerChoice) 
-                return handleScore('draw');
-            else if(playerChoice == "rock" && computerChoice == "scissors")                
-                return handleScore('won');
-            else if(playerChoice == "paper" && computerChoice == "rock") 
-                return handleScore('won');
-            else if(playerChoice == "scissors" && computerChoice == "paper") 
-                return handleScore('won');
-            else 
-                return handleScore('lost');            
-        }        
+        playGame();
+
+        
+        
+        
+        
+
+  
+        
+
+
+       
+        
+        
+          
+        
+        
+        
+        
      
         function play() {   
-            for(let i = 0; i < 5; i++) {
-                let playerChoice = prompt("Please choose Rock, Paper or Scissors").toLowerCase();
-                let computerChoice = checkComputerChoice(choices.length);
-                if(missedRounds > 0) {
-                    i -= missedRounds;
-                    missedRounds = 0;
-                }
-                if(playerChoice !== '') {
+          
+                
+                    
+                             
+
+                       
+                
+                
+                
                 console.log("Round " + round + ":");
                 console.log("You picked " + playerChoice[0].toUpperCase() + playerChoice.slice(1) + " " + "Computer picked " +
                 computerChoice[0].toUpperCase() + computerChoice.slice(1)); 
-                }
+                
 
-                console.log(playRound(playerChoice, computerChoice));
+                
 
-                if(i == 4){
-                    if(playerScore > computerScore) {
-                        console.log("You have won the game " + playerScore + " to " + computerScore);
-                    } else if (playerScore < computerScore) {
-                        console.log("You have lost the game " + playerScore + " to " + computerScore);
-                    } else if (playerScore == computerScore) {
-                        console.log("It's a draw! Play again!");
-                    }
-                }   
+                
+                    
             }
-        }
         
-        play(); 
+        //play(); 
     </script>
 </body>
 </html>
